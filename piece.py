@@ -6,7 +6,7 @@ from modi.module.output_module.speaker import Speaker
 
 import time
 
-#TODO: Gyro Censor
+#TODO: Gyro Sensor
 #TODO: Die State
 #TODO: Detect Die
 #TODO: Revive

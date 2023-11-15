@@ -5,10 +5,9 @@ from modi.module.output_module.led import Led
 from modi.module.output_module.speaker import Speaker
 
 import time
+import asyncio
 
-#TODO: Gyro Censor
-#TODO: Die State
-#TODO: Detect Die
+#TODO: Gyro Censor (가속도를 감지해 외부에서 충격을 받았는지 체크)
 #TODO: Revive
 #TODO: Diagonal Movement
 class Piece():
@@ -30,6 +29,24 @@ class Piece():
         self.__speaker__: Speaker = bundle.speakers[0]
 
         self.__gyro__: Gyro = bundle.gyros[0]
+
+        self.__is_alive__: bool = True
+
+        self.__detect_die__()
+
+
+    async def __detect_die__(self):
+        while True:
+            await asyncio.sleep(0.05)
+            if (self.__forced_moved__()):
+                self.__is_alive__ = False
+                self.die()
+                break
+
+
+    def __forced_moved__(self) -> bool:
+        pass
+        return False
 
     
     def __forward__(self, length: int = 1) -> None:
@@ -61,20 +78,23 @@ class Piece():
         self.__motor__.second_speed = 0
 
     def move_forward(self, size: int = 1) -> None:
-        self.__forward__(size)
+        if (self.__is_alive__): self.__forward__(size)
+        
 
     def move_backward(self, size: int = 1) -> None:
-        self.__backward__(size)
+        if (self.__is_alive__): self.__backward__(size)
 
     def move_left(self, size: int = 1) -> None:
-        self.__left__()
-        self.__forward__(size)
-        self.__right__()
+        if (self.__is_alive__):
+            self.__left__()
+            self.__forward__(size)
+            self.__right__()
 
     def move_right(self, size: int = 1) -> None:
-        self.__right__()
-        self.__forward__(size)
-        self.__left__()
+        if (self.__is_alive__):
+            self.__right__()
+            self.__forward__(size)
+            self.__left__()
 
     def die(self) -> None:
         self.__led__.red = 100

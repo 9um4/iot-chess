@@ -7,7 +7,8 @@ from modi.module.output_module.speaker import Speaker
 import time
 import asyncio
 
-#TODO: Gyro Censor (가속도를 감지해 외부에서 충격을 받았는지 체크)
+from abc import abstractmethod
+
 #TODO: Revive
 #TODO: Diagonal Movement
 class Piece():
@@ -154,6 +155,14 @@ class Piece():
         time.sleep(0.75)
         self.__led__.turn_off()
         self.__speaker__.turn_off()
+
+    @abstractmethod
+    def move(self, movement: int = 1) -> None:
+        """
+        말들의 실제 이동을 구현할 메소드
+        """
+        # self.do_something()
+        pass
 
 
 if __name__ == "__main__":

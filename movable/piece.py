@@ -32,22 +32,36 @@ class Piece():
 
         self.__is_alive__: bool = True
 
-        self.__detect_die__()
+        self.__is_moving__: bool = False
+
+        self.__previous_acceleration_x__: float = self.__gyro__.acceleration_x
+        self.__previous_acceleration_y__: float = self.__gyro__.acceleration_y
+        self.__previous_acceleration_z__: float = self.__gyro__.acceleration_z
+
+        self.__diff_factor__ = 0.5
+
+        asyncio.run(self.__detect_die__())
 
 
     async def __detect_die__(self):
-        while True:
-            await asyncio.sleep(0.05)
-            if (self.__forced_moved__()):
+        """
+        가속도의 변화량이 self.__diff_factor__보다 큰 경우 죽은 것으로 간주 (충격 감지)
+        """
+        while self.__is_alive__:
+            asyncio.sleep(0.05)
+            diff_x: float = abs(self.__gyro__.acceleration_x - self.__previous_acceleration_x__)
+            diff_y: float = abs(self.__gyro__.acceleration_y - self.__previous_acceleration_y__)
+            diff_z: float = abs(self.__gyro__.acceleration_z - self.__previous_acceleration_z__)
+
+            diff_size: float = (diff_x ** 2) + (diff_y ** 2) + (diff_z ** 2)
+
+            self.__previous_acceleration_x__: float = self.__gyro__.acceleration_x
+            self.__previous_acceleration_y__: float = self.__gyro__.acceleration_y
+            self.__previous_acceleration_z__: float = self.__gyro__.acceleration_z
+
+            if (diff_size >= self.__diff_factor__):
                 self.__is_alive__ = False
                 self.die()
-                break
-
-
-    def __forced_moved__(self) -> bool:
-        pass
-        return False
-
     
     def __forward__(self, length: int = 1) -> None:
         self.__motor__.first_speed = -50

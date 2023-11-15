@@ -37,8 +37,6 @@ class Piece():
         self.__previous_acceleration_x__: float = self.__gyro__.acceleration_x
         self.__previous_acceleration_y__: float = self.__gyro__.acceleration_y
         self.__previous_acceleration_z__: float = self.__gyro__.acceleration_z
-
-        print("a", self.__previous_acceleration_x__, self.__previous_acceleration_y__, self.__previous_acceleration_z__, sep="\t")
         
         time.sleep(0.1)
 
@@ -46,20 +44,16 @@ class Piece():
         self.__previous_acceleration_y__: float = self.__gyro__.acceleration_y
         self.__previous_acceleration_z__: float = self.__gyro__.acceleration_z
 
-        print("b", self.__previous_acceleration_x__, self.__previous_acceleration_y__, self.__previous_acceleration_z__, sep="\t")
-
         self.__diff_factor__ = 1
 
-        asyncio.run(self.__detect_die__())
-
+        # await self.__detect_die()
 
     async def __detect_die__(self):
         """
         가속도의 변화량이 self.__diff_factor__보다 큰 경우 죽은 것으로 간주 (충격 감지)
         """
-        print(self.__previous_acceleration_x__, self.__previous_acceleration_y__, self.__previous_acceleration_z__, sep="\t")
         while self.__is_alive__:
-            await asyncio.sleep(0.05)
+            time.sleep(0.05)
             diff_x: float = abs(self.__gyro__.acceleration_x - self.__previous_acceleration_x__)
             diff_y: float = abs(self.__gyro__.acceleration_y - self.__previous_acceleration_y__)
             diff_z: float = abs(self.__gyro__.acceleration_z - self.__previous_acceleration_z__)
@@ -68,40 +62,42 @@ class Piece():
             self.__previous_acceleration_y__: float = self.__gyro__.acceleration_y
             self.__previous_acceleration_z__: float = self.__gyro__.acceleration_z
 
-            print(self.__previous_acceleration_x__, self.__previous_acceleration_y__, self.__previous_acceleration_z__, sep="\t")
-
             diff_size: float = (diff_x ** 2) + (diff_y ** 2) + (diff_z ** 2)
-            print(diff_size)
 
             if (diff_size >= self.__diff_factor__):
                 self.__is_alive__ = False
                 self.die()
     
     def __forward__(self, length: int = 1) -> None:
+        self.__is_moving__ = True
         self.__motor__.first_speed = -50
         self.__motor__.second_speed = 55
         time.sleep(self.__column_time__ * length)
         self.__stop__()
 
     def __backward__(self, length: int = 1) -> None:
+        self.__is_moving__ = True
         self.__motor__.first_speed = 50
         self.__motor__.second_speed = -55
         time.sleep(self.__column_time__ * length)
         self.__stop__()
 
     def __left__(self, size: int = 1) -> None:
+        self.__is_moving__ = True
         self.__motor__.first_speed = 50
         self.__motor__.second_speed = 53
         time.sleep(self.__degree_time__ * size)
         self.__stop__()
 
     def __right__(self, size: int = 1) -> None:
+        self.__is_moving__ = True
         self.__motor__.first_speed = -50
         self.__motor__.second_speed = -55
         time.sleep(self.__degree_time__ * size)
         self.__stop__()
 
     def __stop__(self) -> None:
+        self.__is_moving__ = False
         self.__motor__.first_speed = 0
         self.__motor__.second_speed = 0
 
@@ -125,6 +121,7 @@ class Piece():
             self.__left__()
 
     def die(self) -> None:
+        print("died!")
         self.__led__.red = 100
         self.__speaker__.tune = 880, 50
         time.sleep(0.75)
@@ -146,4 +143,5 @@ class Piece():
 
 if __name__ == "__main__":
     piece: Piece = Piece(MODI())
-    # 테스트할 코드 입력
+    print(1)
+    piece.move_forward()

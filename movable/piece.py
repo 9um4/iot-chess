@@ -102,26 +102,41 @@ class Piece():
         self.__motor__.second_speed = 0
 
     def move_forward(self, size: int = 1) -> None:
+        """
+        module이 바라보는 방향으로 size 만큼 이동
+        """
         if (self.__is_alive__): self.__forward__(size)
         
 
     def move_backward(self, size: int = 1) -> None:
+        """
+        module이 바라보는 반대 방향으로 size 만큼 이동
+        """
         if (self.__is_alive__): self.__backward__(size)
 
     def move_left(self, size: int = 1) -> None:
+        """
+        module이 바라보는 방향을 기준으로 왼쪽 방향으로 size 만큼 이동
+        """
         if (self.__is_alive__):
             self.__left__()
             self.__forward__(size)
             self.__right__()
 
     def move_right(self, size: int = 1) -> None:
+        """
+        module이 바라보는 방향을 기준으로 오른쪽 방향으로 size 만큼 이동
+        """
         if (self.__is_alive__):
             self.__right__()
             self.__forward__(size)
             self.__left__()
 
     def die(self) -> None:
-        print("died!")
+        """
+        죽음을 감지하였을 때 실행할 메서드
+        """
+        # print("died!")
         self.__led__.red = 100
         self.__speaker__.tune = 880, 50
         time.sleep(0.75)
@@ -143,5 +158,4 @@ class Piece():
 
 if __name__ == "__main__":
     piece: Piece = Piece(MODI())
-    print(1)
     piece.move_forward()

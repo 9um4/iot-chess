@@ -38,7 +38,17 @@ class Piece():
         self.__previous_acceleration_y__: float = self.__gyro__.acceleration_y
         self.__previous_acceleration_z__: float = self.__gyro__.acceleration_z
 
-        self.__diff_factor__ = 0.5
+        print("a", self.__previous_acceleration_x__, self.__previous_acceleration_y__, self.__previous_acceleration_z__, sep="\t")
+        
+        time.sleep(0.1)
+
+        self.__previous_acceleration_x__: float = self.__gyro__.acceleration_x
+        self.__previous_acceleration_y__: float = self.__gyro__.acceleration_y
+        self.__previous_acceleration_z__: float = self.__gyro__.acceleration_z
+
+        print("b", self.__previous_acceleration_x__, self.__previous_acceleration_y__, self.__previous_acceleration_z__, sep="\t")
+
+        self.__diff_factor__ = 1
 
         asyncio.run(self.__detect_die__())
 
@@ -47,17 +57,21 @@ class Piece():
         """
         가속도의 변화량이 self.__diff_factor__보다 큰 경우 죽은 것으로 간주 (충격 감지)
         """
+        print(self.__previous_acceleration_x__, self.__previous_acceleration_y__, self.__previous_acceleration_z__, sep="\t")
         while self.__is_alive__:
-            asyncio.sleep(0.05)
+            await asyncio.sleep(0.05)
             diff_x: float = abs(self.__gyro__.acceleration_x - self.__previous_acceleration_x__)
             diff_y: float = abs(self.__gyro__.acceleration_y - self.__previous_acceleration_y__)
             diff_z: float = abs(self.__gyro__.acceleration_z - self.__previous_acceleration_z__)
 
-            diff_size: float = (diff_x ** 2) + (diff_y ** 2) + (diff_z ** 2)
-
             self.__previous_acceleration_x__: float = self.__gyro__.acceleration_x
             self.__previous_acceleration_y__: float = self.__gyro__.acceleration_y
             self.__previous_acceleration_z__: float = self.__gyro__.acceleration_z
+
+            print(self.__previous_acceleration_x__, self.__previous_acceleration_y__, self.__previous_acceleration_z__, sep="\t")
+
+            diff_size: float = (diff_x ** 2) + (diff_y ** 2) + (diff_z ** 2)
+            print(diff_size)
 
             if (diff_size >= self.__diff_factor__):
                 self.__is_alive__ = False

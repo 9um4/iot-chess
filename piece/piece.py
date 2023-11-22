@@ -170,6 +170,39 @@ class Piece():
         self.__led__.turn_off()
         self.__speaker__.turn_off()
 
+    def move_left_up(self, size: float) -> None:
+        """
+        왼쪽 대각선 위로 이동하는 메서드
+        """
+        self.__left_diagonal__()
+        self.__forward__(self.__column_time__ * (2 ** 0.5) * size)
+        self.__right_diagonal__()
+
+    def move_right_up(self, size: float) -> None:
+        """
+        오른쪽 대각선 위로 이동하는 메서드
+        """
+        self.__right_diagonal__()
+        self.__forward__(self.__column_time__ * (2 ** 0.5) * size)
+        self.__left_diagonal__()
+
+    def move_left_down(self, size: float) -> None:
+        """
+        왼쪽 대각선 아래로 이동하는 메서드
+        """
+        self.__right_diagonal__()
+        self.__backward__(self.__column_time__ * (2 ** 0.5) * size)
+        self.__left_diagonal__()
+
+    def move_right_down(self, size: float) -> None:
+        """
+        오른쪽 대각선 아래로 이동하는 메서드
+        """
+        self.__left_diagonal__()
+        self.__backward__(self.__column_time__ * (2 ** 0.5) * size)
+        self.__right_diagonal__()
+
+
     @abstractmethod
     def move(self, movement: int = 1) -> None:
         """

@@ -13,7 +13,7 @@ from abc import abstractmethod
 #TODO: Diagonal Movement
 class Piece():
 
-    def __init__(self, bundle: MODI, column_time: float = 1.0, degree_time: float = 1.02) -> None:
+    def __init__(self, bundle: MODI, column_time: float = 3.3, degree_time: float = 1.02) -> None:
         self.__bundle__: MODI = bundle
 
         self.__column_time__: float = column_time
@@ -72,14 +72,14 @@ class Piece():
     def __forward__(self, length: int = 1) -> None:
         self.__is_moving__ = True
         self.__motor__.first_speed = -50
-        self.__motor__.second_speed = 55
+        self.__motor__.second_speed = 53
         time.sleep(self.__column_time__ * length)
         self.__stop__()
 
     def __backward__(self, length: int = 1) -> None:
         self.__is_moving__ = True
         self.__motor__.first_speed = 50
-        self.__motor__.second_speed = -55
+        self.__motor__.second_speed = -53
         time.sleep(self.__column_time__ * length)
         self.__stop__()
 
@@ -93,8 +93,22 @@ class Piece():
     def __right__(self, size: int = 1) -> None:
         self.__is_moving__ = True
         self.__motor__.first_speed = -50
-        self.__motor__.second_speed = -55
+        self.__motor__.second_speed = -53
         time.sleep(self.__degree_time__ * size)
+        self.__stop__()
+
+    def __left_diagonal__(self) -> None:
+        self.__is_moving__ = True
+        self.__motor__.first_speed = 50
+        self.__motor__.second_speed = 53
+        time.sleep(self.__degree_time__ * 0.5)
+        self.__stop__()
+
+    def __right_diagonal__(self) -> None:
+        self.__is_moving__ = True
+        self.__motor__.first_speed = -50
+        self.__motor__.second_speed = -53
+        time.sleep(self.__degree_time__ * 0.5)
         self.__stop__()
 
     def __stop__(self) -> None:
@@ -167,4 +181,4 @@ class Piece():
 
 if __name__ == "__main__":
     piece: Piece = Piece(MODI())
-    piece.move_forward()
+    piece.__left_up__()

@@ -3,6 +3,7 @@ from modi.module.input_module.gyro import Gyro
 from modi.module.output_module.motor import Motor
 from modi.module.output_module.led import Led
 from modi.module.output_module.speaker import Speaker
+from modi.module.output_module.display import Display
 
 import time
 import asyncio
@@ -16,6 +17,9 @@ class Piece():
     def __init__(self, bundle: MODI, column_time: float = 3.3, degree_time: float = 1.02) -> None:
         self.__bundle__: MODI = bundle
 
+        self.location_x: int
+        self.location_y: int
+
         self.__column_time__: float = column_time
 
         self.__degree_time__: float = degree_time
@@ -26,6 +30,8 @@ class Piece():
 
         self.__led__: Led = bundle.leds[0]
         self.__led__.turn_off()
+
+        self.__display__ : Display = bundle.displays[0]
 
         self.__speaker__: Speaker = bundle.speakers[0]
 
@@ -49,25 +55,23 @@ class Piece():
 
         # await self.__detect_die()
 
-    async def __detect_die__(self):
+    def __detect_die__(self):
         """
         가속도의 변화량이 self.__diff_factor__보다 큰 경우 죽은 것으로 간주 (충격 감지)
         """
-        while self.__is_alive__:
-            time.sleep(0.05)
-            diff_x: float = abs(self.__gyro__.acceleration_x - self.__previous_acceleration_x__)
-            diff_y: float = abs(self.__gyro__.acceleration_y - self.__previous_acceleration_y__)
-            diff_z: float = abs(self.__gyro__.acceleration_z - self.__previous_acceleration_z__)
+        diff_x: float = abs(self.__gyro__.acceleration_x - self.__previous_acceleration_x__)
+        diff_y: float = abs(self.__gyro__.acceleration_y - self.__previous_acceleration_y__)
+        diff_z: float = abs(self.__gyro__.acceleration_z - self.__previous_acceleration_z__)
 
-            self.__previous_acceleration_x__: float = self.__gyro__.acceleration_x
-            self.__previous_acceleration_y__: float = self.__gyro__.acceleration_y
-            self.__previous_acceleration_z__: float = self.__gyro__.acceleration_z
+        self.__previous_acceleration_x__: float = self.__gyro__.acceleration_x
+        self.__previous_acceleration_y__: float = self.__gyro__.acceleration_y
+        self.__previous_acceleration_z__: float = self.__gyro__.acceleration_z
 
-            diff_size: float = (diff_x ** 2) + (diff_y ** 2) + (diff_z ** 2)
+        diff_size: float = (diff_x ** 2) + (diff_y ** 2) + (diff_z ** 2)
 
-            if (diff_size >= self.__diff_factor__):
-                self.__is_alive__ = False
-                self.die()
+        if (diff_size >= self.__diff_factor__):
+            self.__is_alive__ = False
+            self.die()
     
     def __forward__(self, length: int = 1) -> None:
         self.__is_moving__ = True

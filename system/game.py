@@ -16,7 +16,6 @@ class Game:
             location_y: int
             ) -> int:
         if (not self.spread_reader.player_exists(1)):
-            print(1)
             self.spread_reader.first_player['id'] = randint(10000000, 99999999)
             self.spread_reader.first_player['name'] = name
             self.spread_reader.first_player['state'] = "IDLE"
@@ -25,10 +24,8 @@ class Game:
             self.spread_reader.first_player['location_y'] = 3
             self.spread_reader.first_player['command'] = 0
             self.spread_reader.update_first_player()
-            print(self.spread_reader.first_player)
             return 1
         elif (not self.spread_reader.player_exists(2)):
-            print(2)
             self.spread_reader.second_player['id'] = randint(10000000, 99999999)
             self.spread_reader.second_player['name'] = name
             self.spread_reader.second_player['state'] = "OPPONENT_TURN"
@@ -41,5 +38,4 @@ class Game:
             self.spread_reader.update_first_player()
             return 2
         else:
-            print(3)
             return -1
